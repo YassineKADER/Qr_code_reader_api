@@ -9,21 +9,17 @@ const upload = multer();
 
 app.post('/scan_qr', upload.single('image'), (req, res) => {
   if (!req.file) {
+    console.log(req.body)
     return res.status(400).json({ error: 'No image uploaded' });
   }
-
     const image = qrImage.imageSync(req.file.buffer);
     fs.writeFileSync("image",image);
-    
-
     const qrData = "some data";
     if (!qrData) {
       return res.status(404).json({ error: 'No QR code found' });
     }
-
     return res.json({ data: qrData });
   });
-
   app.get("/", (req, res)=>{
     return res.json({ "meeage": "welcome" });
   })
