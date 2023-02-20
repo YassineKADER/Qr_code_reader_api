@@ -4,9 +4,8 @@ from PIL import Image
 
 app = Flask(__name__)
 
-def read_qr_code(filename):
+def read_qr_code(img):
     try:
-        img = Image.open(filename)
         value = decode(img)
         data = []
         for barcode in value:
@@ -21,14 +20,14 @@ def scan_qr():
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
 
-    img_file = request.files['image'].read()
-    img = Image.open(img_file)
+    img_file = request.files['image']
+    img = Image.open(img_file.stream)
     results = read_qr_code(img)
-    if not results:
-        return jsonify({'error': 'No QR code found'}), 404
+    if results == None:
+        return jsonify({'error': results}), 404
 
-    qr_data = results[0].data.decode('utf-8')
+    qr_data = results
     return jsonify({'data': qr_data}), 200
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
