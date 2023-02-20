@@ -1,30 +1,29 @@
 from flask import Flask, jsonify, request
+from pyzbar.pyzbar import decode
 from PIL import Image
-import cv2
+
 app = Flask(__name__)
 
 def read_qr_code(filename):
     try:
-        img = cv2.imread(filename)
-        detect = cv2.QRCodeDetector()
-        value, points, straight_qrcode = detect.detectAndDecode(img)
-        return value
+        img = Image.open(filename)
+        value = decode(img)
+        data = []
+        for barcode in value:
+            data.append({'data':barcode.data.decode("utf-8"), 'type':barcode.type})
+        return data
     except:
         return
 
-print(read_qr_code("./qr-code.png"))
-
-"""
 @app.route('/scan_qr', methods=['POST'])
 def scan_qr():
+    print(request)
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
 
     img_file = request.files['image'].read()
-    img = Image.open(io.BytesIO(img_file))
-    scanner = zbar.Scanner()
-    results = scanner.scan(img.convert('L'))
-
+    img = Image.open(img_file)
+    results = read_qr_code(img)
     if not results:
         return jsonify({'error': 'No QR code found'}), 404
 
@@ -33,4 +32,3 @@ def scan_qr():
 
 if __name__ == '__main__':
     app.run()
-"""
