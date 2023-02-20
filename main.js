@@ -9,7 +9,7 @@ const upload = multer();
 
 app.post('/scan_qr', upload.single('image'), (req, res) => {
   if (!req.file) {
-    console.log(req.body)
+    console.log(req.files)
     return res.status(400).json({ error: 'No image uploaded' });
   }
     const image = qrImage.imageSync(req.file.buffer);
