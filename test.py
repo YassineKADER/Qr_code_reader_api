@@ -19,7 +19,7 @@ print(array)
 
 pts = np.array(array, np.int32)
 
-color = (0,0,255)
+color = (255,0,255)
 isClosed = True
 thickness = 2
 

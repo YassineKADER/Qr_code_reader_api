@@ -10,8 +10,6 @@ def read_qr_code(img):
         data = []
         for barcode in value:
             data.append({'data':barcode.data.decode("utf-8"), 'type':barcode.type,'polygon':barcode.polygon})
-            print(barcode)
-            print("hhhhhhhh")
         return data
     except:
         return
